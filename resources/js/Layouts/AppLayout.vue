@@ -8,6 +8,8 @@
                     <h1>Laravel Inertia Breadcrumb System</h1>
                     <p>Professional Dark Dashboard UI</p>
 
+                    <GlobalSearch />
+
                     <div class="nav">
 
                         <Link
@@ -26,6 +28,14 @@
                             Users
                         </Link>
 
+                        <Link
+                            href="/files"
+                            class="btn"
+                            :class="{ activeBtn: page.url.includes('/files') }"
+                        >
+                            Files
+                        </Link>
+
                     </div>
 
                 </div>
@@ -38,14 +48,50 @@
 
             </div>
         </div>
+        <Toast />
     </div>
 </template>
 
 <script setup>
 import Breadcrumbs from '../Components/Breadcrumbs.vue'
+import Toast from '../Components/Toast.vue'
+import GlobalSearch from '../Components/GlobalSearch.vue'
 import { Link, usePage } from '@inertiajs/vue3'
+import { onMounted } from 'vue'
 
 const page = usePage()
+
+onMounted(() => {
+    // Show flash messages from Laravel
+    if (page.props.flash?.success) {
+        window.showToast({
+            type: 'success',
+            title: 'Success',
+            message: page.props.flash.success
+        })
+    }
+    if (page.props.flash?.error) {
+        window.showToast({
+            type: 'error',
+            title: 'Error',
+            message: page.props.flash.error
+        })
+    }
+    if (page.props.flash?.warning) {
+        window.showToast({
+            type: 'warning',
+            title: 'Warning',
+            message: page.props.flash.warning
+        })
+    }
+    if (page.props.flash?.info) {
+        window.showToast({
+            type: 'info',
+            title: 'Info',
+            message: page.props.flash.info
+        })
+    }
+})
 </script>
 
 <style>
