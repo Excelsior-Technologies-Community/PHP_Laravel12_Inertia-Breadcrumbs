@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
@@ -56,5 +57,31 @@ class UserController extends Controller
         return Inertia::render('Users/Show', [
             'user' => $user,
         ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = collect($this->users)->firstWhere('id', (int)$id);
+
+        abort_if(!$user, 404);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'role' => 'required|string'
+        ]);
+
+        // Update user data (in real app, this would update database)
+        $userIndex = collect($this->users)->search(fn($u) => $u['id'] === (int)$id);
+        if ($userIndex !== false) {
+            $this->users[$userIndex] = [
+                'id' => $user['id'],
+                'name' => $request->name,
+                'email' => $request->email,
+                'role' => $request->role,
+            ];
+        }
+
+        return back()->with('success', 'Profile updated successfully!');
     }
 }
